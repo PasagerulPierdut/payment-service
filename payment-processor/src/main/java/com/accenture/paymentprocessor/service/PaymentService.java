@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class PaymentService {
@@ -47,10 +48,12 @@ public class PaymentService {
         }).orElseThrow(NoSuchElementException::new);
     }
 
-    public void deletePayment (Integer id, Payment payment) {
-        paymentRepository.findById(id).map(payment1 -> {
+    public void deletePayment(Integer id) {
+        Optional<Payment> opt = paymentRepository.findById(id);
+        if (opt.isPresent()) {
             paymentRepository.deleteById(id);
-            return payment;
-        }).orElseThrow(NoSuchElementException::new);
+        } else {
+            throw new NoSuchElementException("Payment not registered.");
+        }
     }
 }
